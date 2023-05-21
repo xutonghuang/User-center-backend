@@ -72,12 +72,12 @@ public class User implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 
     /**
      * 用户角色 0 - 普通用户 1 - 管理员
      */
-    @TableLogic
     private Integer userRole;
 
     @TableField(exist = false)
