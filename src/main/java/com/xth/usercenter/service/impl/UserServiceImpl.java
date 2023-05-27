@@ -2,6 +2,8 @@ package com.xth.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xth.usercenter.common.ErrorCode;
+import com.xth.usercenter.exception.BusinessException;
 import com.xth.usercenter.mapper.UserMapper;
 import com.xth.usercenter.model.domain.User;
 import com.xth.usercenter.service.UserService;
@@ -39,31 +41,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
         if (StringUtils.isAllBlank(userAccount, userPassword, checkPassword)) {
-            // TODO 修改为自定义异常
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         // 校验账户不能包含特殊字符
         String validPatrn = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Matcher matcher = Pattern.compile(validPatrn).matcher(userAccount);
         if (matcher.find()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 密码和校验密码相同
         if (!userPassword.equals(checkPassword)) {
             return -1;
         }
-        // 账户不能重复
+        // 账号不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
 
         // 2. 加密
