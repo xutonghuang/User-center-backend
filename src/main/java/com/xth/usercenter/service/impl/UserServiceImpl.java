@@ -73,6 +73,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        user.setUsername(userAccount);
+        user.setAvatarUrl("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg1.doubanio.com%2Fview%2Fgroup_topic%2Fl%2Fpublic%2Fp515017569.jpg&refer=http%3A%2F%2Fimg1.doubanio.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1687838838&t=a11fc948a3663513953ab92520063aec");
         boolean saveResult = this.save(user);
         if (!saveResult) {
             return -1;
